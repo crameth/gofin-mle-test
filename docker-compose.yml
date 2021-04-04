@@ -1,0 +1,30 @@
+version: '3'
+services: 
+  gojek-mariadb:
+    image: mariadb:latest
+    container_name: gojek-mariadb
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: gojek
+    volumes:
+      - ./data:/data:ro
+
+  gojek-api:
+    image: gojek-api
+    container_name: gojek-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on: 
+      - gojek-mariadb
+    ports:
+      - 3000:3000
+    environment:
+      MYSQL_HOST: gojek-mariadb
+      MYSQL_DATABASE: gojek
+      MYSQL_USER: root
+      MYSQL_PASSWORD: r4vrG9mXUxPsDPPe
+    restart: unless-stopped
+    volumes:
+      - ./model:/model:ro
